@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wishes to the Harvest Moon</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='24' fill='%23ffe39a'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="moon-scene" aria-labelledby="page-title">
+      <div class="sky-backdrop" aria-hidden="true"></div>
+      <div class="stars" aria-hidden="true"></div>
+      <div class="cloud cloud-one" aria-hidden="true"></div>
+      <div class="cloud cloud-two" aria-hidden="true"></div>
+      <div class="lantern-field" aria-hidden="true">
+        <span class="club-lantern ksa-lantern"></span>
+        <span class="club-lantern kairos-lantern"></span>
+        <span class="small-lanterns small-lanterns-one"></span>
+        <span class="small-lanterns small-lanterns-two"></span>
+      </div>
+      <div class="moon-wrap" aria-hidden="true">
+        <div class="moon" id="moon"></div>
+      </div>
+      <div class="rabbit" aria-hidden="true">
+        <div class="rabbit-body"></div>
+        <div class="rabbit-head"></div>
+        <div class="rabbit-ear rabbit-ear-left"></div>
+        <div class="rabbit-ear rabbit-ear-right"></div>
+        <div class="rabbit-tail"></div>
+      </div>
+      <h1 id="page-title" class="scene-title">Wishes to the Harvest Moon</h1>
+
+      <section class="wish-panel" aria-describedby="privacy-note status-message">
+        <p class="eyebrow">Mid-Autumn wishes</p>
+        <p class="wish-count" id="wish-count" aria-live="polite">0 wishes have reached the moon.</p>
+        <form id="wish-form" novalidate>
+          <label for="name">Name <span>optional</span></label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="Luna" />
+
+          <label for="wish">My Wish</label>
+          <textarea
+            id="wish"
+            name="wish"
+            required
+            rows="5"
+            placeholder="I wish my family happiness and good health."
+          ></textarea>
+
+          <button type="submit">Send to the Moon</button>
+        </form>
+        <p class="privacy-note" id="privacy-note">
+          Private by design: your name and wish stay on this device. The counter saves only a number.
+        </p>
+        <p id="status-message" class="status" role="status" aria-live="polite"></p>
+        <div class="share-panel" id="share-panel" hidden>
+          <p class="share-title">Share this moon wish</p>
+          <p class="share-copy">
+            Save a private image of the wish you just sent, then post it wherever you like.
+          </p>
+          <img class="share-preview" id="share-preview" alt="Preview of your shareable Harvest Moon wish image" hidden />
+          <label class="share-name-option" for="include-name">
+            <input id="include-name" type="checkbox" checked />
+            Include my name
+          </label>
+          <div class="share-actions">
+            <button class="secondary-button" id="share-wish-image" type="button">Share</button>
+            <button class="secondary-button" id="save-wish-image" type="button">Save image</button>
+          </div>
+          <button class="text-button" id="new-wish" type="button">Start a new wish</button>
+        </div>
+      </section>
+
+      <div class="flying-wish" id="flying-wish" aria-hidden="true">
+        <div class="paper-front">
+          <span id="paper-name"></span>
+          <p id="paper-wish"></p>
+        </div>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
