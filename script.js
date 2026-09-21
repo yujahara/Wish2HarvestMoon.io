@@ -17,6 +17,8 @@ const sharePreview = document.querySelector("#share-preview");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const allowsParallax = window.matchMedia("(pointer: fine)");
 const counterStorageKey = "harvestMoonWishCount";
+const counterApiBase = "https://countapi.mileshilliard.com/api/v1";
+const counterApiKey = "wish2harvestmoon-io-wishes";
 let sessionWishCount = 0;
 let lastWishForSharing = null;
 let shareImageBlob = null;
@@ -85,11 +87,51 @@ function renderWishCount(count) {
   wishCount.textContent = `${count.toLocaleString()} ${noun} reached the moon.`;
 }
 
-function recordWishArrival() {
+function syncLocalCounter(count) {
+  sessionWishCount = count;
+  writeStoredCounter(count);
+}
+
+function parseCounterValue(data) {
+  const value = Number.parseInt(data?.value, 10);
+  return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+async function requestSharedCounter(action) {
+  const response = await fetch(`${counterApiBase}/${action}/${counterApiKey}`, {
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Shared counter unavailable");
+
+  const value = parseCounterValue(await response.json());
+  if (value === null) throw new Error("Shared counter response invalid");
+
+  syncLocalCounter(value);
+  renderWishCount(value);
+  return value;
+}
+
+async function loadWishCount() {
+  renderWishCount(getStoredWishCount());
+
+  try {
+    await requestSharedCounter("get");
+  } catch {
+    renderWishCount(getStoredWishCount());
+  }
+}
+
+async function recordWishArrival() {
+  try {
+    return await requestSharedCounter("hit");
+  } catch {
+    // GitHub Pages cannot persist data by itself, so keep a private device fallback.
+  }
+
   const nextCount = getStoredWishCount() + 1;
-  sessionWishCount = nextCount;
-  writeStoredCounter(nextCount);
+  syncLocalCounter(nextCount);
   renderWishCount(nextCount);
+  return nextCount;
 }
 
 function resetFlyingWish() {
@@ -164,7 +206,7 @@ async function prepareSharePreview() {
 
 async function completeWishJourney(button) {
   setStatus("Your wish has reached the moon. Happy Mid-Autumn Festival.");
-  recordWishArrival();
+  await recordWishArrival();
   form.reset();
   paperName.textContent = "";
   paperWish.textContent = "";
@@ -482,5 +524,5 @@ window.addEventListener("pointermove", (event) => {
   }
 }, { passive: true });
 
-renderWishCount(getStoredWishCount());
+loadWishCount();
 preloadShareAssets();
